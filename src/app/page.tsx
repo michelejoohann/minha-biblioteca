@@ -1,27 +1,35 @@
+import Link from "next/link";
+
 const recursos = [
-  "Cadastro rápido por ISBN",
-  "Localização de cada exemplar",
-  "Leitura e empréstimos",
-  "Wishlist sem duplicidade",
+  { icon: "⌁", label: "Cadastro rápido por ISBN" },
+  { icon: "⌖", label: "Localização de cada exemplar" },
+  { icon: "✓", label: "Leitura e empréstimos" },
+  { icon: "♡", label: "Wishlist sem duplicidade" },
 ];
 
 export default function Home() {
   return (
-    <main>
-      <section className="hero">
+    <main className="home-page">
+      <section className="hero" aria-labelledby="home-title">
+        <div className="brand-mark" aria-hidden="true">MB</div>
         <span className="eyebrow">Biblioteca familiar</span>
-        <h1>Seus livros, encontrados em segundos.</h1>
-        <p>
+        <h1 id="home-title">Seus livros, encontrados em segundos.</h1>
+        <p className="hero-copy">
           Organize os livros de Michele, Ayra, Fabio, Denise e da Casa em um só lugar.
         </p>
-        <ul>
+        <ul className="feature-list">
           {recursos.map((recurso) => (
-            <li key={recurso}>{recurso}</li>
+            <li key={recurso.label}>
+              <span aria-hidden="true">{recurso.icon}</span>
+              {recurso.label}
+            </li>
           ))}
         </ul>
+        <Link className="primary-button" href="/login">
+          Entrar na biblioteca
+        </Link>
         <p className="status">Projeto em construção · MVP</p>
       </section>
     </main>
   );
 }
-
