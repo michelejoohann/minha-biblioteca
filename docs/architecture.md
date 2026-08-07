@@ -49,6 +49,18 @@ fornecedor ou combinar múltiplas fontes sem alterar as telas. Respostas externa
 são validadas e normalizadas antes da persistência; se o provedor não responder,
 o cadastro manual continua disponível.
 
+## Scanner de código de barras
+
+O scanner usa `MediaDevices.getUserMedia` somente depois do toque em **Usar a
+câmera**. Os quadros são processados localmente no navegador por um leitor EAN-13
+especializado em ISBN; nenhuma foto é enviada ou armazenada. Depois da leitura,
+o código segue para o mesmo serviço de validação e consulta por ISBN.
+
+O fluxo de câmera é suportado nas duas versões estáveis mais recentes do Chrome
+e Edge no Android e do Safari no iOS, sempre em HTTPS. A digitação manual permanece
+disponível em qualquer navegador quando não houver câmera, a permissão for negada
+ou a leitura não funcionar.
+
 ## Evolução
 
 Após o MVP, a arquitetura poderá incorporar processamento assíncrono de imagens para cadastro por foto, cache de metadados e observabilidade. Essas extensões não são pré-requisitos para a primeira entrega.

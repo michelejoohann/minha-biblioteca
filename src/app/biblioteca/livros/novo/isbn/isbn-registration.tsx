@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import {
   ManualBookForm,
   type BookDraft,
@@ -17,13 +17,24 @@ const initialLookupState: IsbnLookupState = {
 };
 
 export function IsbnRegistration({
+  initialIsbn,
   locations,
   owners,
 }: {
+  initialIsbn?: string;
   locations: string[];
   owners: OwnerOption[];
 }) {
   const [state, action, pending] = useActionState(lookupIsbn, initialLookupState);
+  const formRef = useRef<HTMLFormElement>(null);
+  const submittedInitialIsbn = useRef(false);
+
+  useEffect(() => {
+    if (initialIsbn && !submittedInitialIsbn.current) {
+      submittedInitialIsbn.current = true;
+      formRef.current?.requestSubmit();
+    }
+  }, [initialIsbn]);
 
   if (state.status === "ready" && state.isbn) {
     const metadata = state.metadata;
@@ -68,7 +79,7 @@ export function IsbnRegistration({
   }
 
   return (
-    <form className="isbn-lookup-card" action={action}>
+    <form className="isbn-lookup-card" action={action} ref={formRef}>
       <div className="isbn-symbol" aria-hidden="true">⌁</div>
       <span className="eyebrow">Busca por ISBN</span>
       <h2>Digite o número do livro</h2>
@@ -79,7 +90,8 @@ export function IsbnRegistration({
         <label htmlFor="isbn">ISBN-10 ou ISBN-13</label>
         <input
           autoComplete="off"
-          autoFocus
+          autoFocus={!initialIsbn}
+          defaultValue={initialIsbn}
           id="isbn"
           inputMode="numeric"
           maxLength={24}
