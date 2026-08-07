@@ -2,10 +2,18 @@
 
 Esta etapa conecta a base local a um projeto Supabase sem versionar credenciais.
 
+## Estado atual
+
+- Projeto: `minha-biblioteca` (`mfuvmiyclvrkspdtbahy`)
+- Região: `us-east-1`
+- Migrações remotas: `initial_schema` e `add_fk_indexes`
+- Segurança: nenhuma recomendação aberta no Security Advisor após a aplicação
+- Ambiente local: configurado em `.env.local`, arquivo ignorado pelo Git
+
 ## 1. Criar o projeto
 
 1. Entre em [supabase.com](https://supabase.com/) e crie uma organização, se necessário.
-2. Crie um projeto chamado `minha-biblioteca` na região mais próxima dos usuários.
+2. Crie um projeto chamado `minha-biblioteca` na região mais próxima dos usuários. Este projeto já foi criado para o ambiente atual.
 3. Guarde a senha do banco em um gerenciador de senhas. Ela não deve entrar no GitHub.
 
 ## 2. Configurar o ambiente local
@@ -44,4 +52,3 @@ O primeiro household criado por uma pessoa autenticada recebe automaticamente:
 Todas as tabelas expostas usam Row Level Security. As políticas verificam a associação da pessoa ao household; alterações de membros e exclusões estruturais ficam restritas a administradores.
 
 Antes de usar dados reais, validar as políticas no ambiente de desenvolvimento com duas contas pertencentes a households diferentes.
-

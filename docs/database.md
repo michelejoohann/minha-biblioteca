@@ -2,7 +2,7 @@
 
 ## Estado da implementação
 
-O primeiro esquema está versionado em `supabase/migrations/202608070001_initial_schema.sql`. Ele cria as entidades abaixo, índices de busca e integridade, triggers de atualização e políticas de Row Level Security. A conexão com um projeto remoto é descrita em `docs/supabase-setup.md`.
+O esquema está versionado em `supabase/migrations`. A migração inicial cria as entidades abaixo, índices de busca e integridade, triggers de atualização e políticas de Row Level Security; uma segunda migração cobre as chaves estrangeiras com os índices recomendados pelo Performance Advisor. As duas migrações estão aplicadas ao projeto `mfuvmiyclvrkspdtbahy`. A conexão é descrita em `docs/supabase-setup.md`.
 
 ## Entidades propostas
 
