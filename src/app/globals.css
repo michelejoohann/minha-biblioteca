@@ -395,6 +395,217 @@ h1 {
   content: "";
 }
 
+.setup-card {
+  width: min(100%, 720px);
+  margin: 6vh auto 0;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: clamp(30px, 7vw, 58px);
+  background: var(--paper);
+  box-shadow: 0 18px 55px rgb(72 43 91 / 9%);
+}
+
+.setup-card h1 {
+  font-size: clamp(2.3rem, 7vw, 4rem);
+}
+
+.setup-card > p {
+  max-width: 570px;
+  color: var(--muted);
+  font-size: 1.03rem;
+  line-height: 1.6;
+}
+
+.setup-form {
+  display: grid;
+  gap: 18px;
+  max-width: 440px;
+  margin-top: 30px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 270px;
+  gap: 20px;
+}
+
+.dashboard-welcome {
+  min-width: 0;
+}
+
+.summary-card,
+.owners-card,
+.next-step-card {
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--paper);
+  box-shadow: 0 12px 38px rgb(72 43 91 / 7%);
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30px;
+  color: white;
+  background: var(--purple);
+}
+
+.summary-number {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.summary-label {
+  margin-top: 8px;
+  font-weight: 750;
+}
+
+.summary-note {
+  margin-top: 22px;
+  color: rgb(255 255 255 / 68%);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.owners-card {
+  grid-column: 1 / -1;
+  padding: clamp(24px, 5vw, 42px);
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.section-heading h2 {
+  margin: 7px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.owner-count {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.owner-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.owner-list li {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #ece3ee;
+  border-radius: 17px;
+  padding: 13px;
+  background: #fff;
+}
+
+.owner-avatar {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  flex: 0 0 42px;
+  place-items: center;
+  border-radius: 13px;
+  color: var(--purple-dark);
+  background: var(--purple-soft);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.owner-info {
+  min-width: 0;
+  display: grid;
+  flex: 1;
+  gap: 2px;
+}
+
+.owner-info strong,
+.owner-info small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.owner-info small {
+  color: var(--muted);
+}
+
+.inactive-owner {
+  opacity: 0.58;
+}
+
+.text-button {
+  border: 0;
+  padding: 8px;
+  color: var(--purple);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.add-owner-form {
+  display: grid;
+  gap: 10px;
+  max-width: 600px;
+  margin-top: 28px;
+  border-top: 1px solid var(--border);
+  padding-top: 25px;
+}
+
+.inline-field {
+  display: flex;
+  gap: 9px;
+}
+
+.compact-button {
+  flex: 0 0 auto;
+  min-width: 112px;
+}
+
+.next-step-card {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+}
+
+.next-step-card > span {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  flex: 0 0 40px;
+  place-items: center;
+  border-radius: 13px;
+  color: var(--purple-dark);
+  background: var(--purple-soft);
+  font-size: 1.25rem;
+}
+
+.next-step-card p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 @media (max-width: 760px) {
   .auth-page {
     padding: 14px;
@@ -426,6 +637,41 @@ h1 {
   .secondary-button {
     min-height: 42px;
     padding-inline: 15px;
+  }
+
+  .library-page {
+    padding: 14px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card,
+  .owners-card,
+  .next-step-card {
+    grid-column: 1;
+  }
+
+  .summary-card {
+    min-height: 190px;
+  }
+
+  .owner-list {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+  }
+
+  .inline-field {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .compact-button {
+    width: 100%;
   }
 }
 
