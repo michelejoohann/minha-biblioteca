@@ -60,8 +60,8 @@ docs/                    Produto, arquitetura e regras
 - [Banco de dados](docs/database.md)
 - [Regras de negócio](docs/business-rules.md)
 - [Histórias de usuário](docs/user-stories.md)
+- [Configuração do Supabase](docs/supabase-setup.md)
 
 ## Estado do projeto
 
-Fundação inicial do MVP. O backlog é acompanhado pelas Issues do GitHub.
-
+Fundação inicial do MVP, com esquema Supabase versionado e clientes SSR preparados. O backlog é acompanhado pelas Issues do GitHub.
