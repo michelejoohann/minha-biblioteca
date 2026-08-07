@@ -588,7 +588,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_manual_book: {
+        Args: {
+          p_author: string
+          p_edition_label?: string
+          p_genres?: string[]
+          p_household_id: string
+          p_language_code?: string
+          p_location_name: string
+          p_notes?: string
+          p_owner_id: string
+          p_publication_year?: number
+          p_publisher?: string
+          p_subtitle?: string
+          p_title: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       household_role: "admin" | "member"
@@ -732,4 +748,3 @@ export const Constants = {
     },
   },
 } as const
-
