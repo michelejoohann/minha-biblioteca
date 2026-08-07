@@ -140,14 +140,24 @@ export default async function LibraryPage() {
           <AddOwnerForm />
         </div>
 
-        <Link className="next-step-card" href="/biblioteca/livros/novo">
-          <span aria-hidden="true">＋</span>
-          <div>
-            <strong>Cadastrar o primeiro livro</strong>
-            <p>Cadastro manual de livros com proprietário e localização.</p>
-          </div>
-        </Link>
+        <div className="next-actions-grid">
+          <Link className="next-step-card" href="/biblioteca/livros/novo/isbn">
+            <span aria-hidden="true">⌁</span>
+            <div>
+              <strong>Cadastrar por ISBN</strong>
+              <p>Busque os dados usando o número do código de barras.</p>
+            </div>
+          </Link>
+          <Link className="next-step-card" href="/biblioteca/livros/novo">
+            <span aria-hidden="true">＋</span>
+            <div>
+              <strong>Cadastrar manualmente</strong>
+              <p>Preencha título, autor, proprietário e localização.</p>
+            </div>
+          </Link>
+        </div>
       </section>
     </main>
   );
 }
+

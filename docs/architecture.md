@@ -42,7 +42,12 @@ Os status de leitura pertencem a uma pessoa e a uma obra. Empréstimos pertencem
 
 ## Integrações
 
-O serviço de ISBN será encapsulado por uma interface interna. Isso permite trocar o fornecedor ou combinar múltiplas fontes sem alterar as telas. Respostas externas deverão ser validadas e normalizadas antes da persistência.
+O serviço de ISBN é encapsulado pela interface interna `BookMetadataProvider`. A
+primeira implementação usa a Search API da Open Library, com cache por 24 horas,
+adequada ao volume baixo de uma biblioteca familiar. Isso permite trocar o
+fornecedor ou combinar múltiplas fontes sem alterar as telas. Respostas externas
+são validadas e normalizadas antes da persistência; se o provedor não responder,
+o cadastro manual continua disponível.
 
 ## Evolução
 

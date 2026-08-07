@@ -6,14 +6,15 @@ import {
   type ManualBookActionState,
 } from "./actions";
 
-type OwnerOption = {
+export type OwnerOption = {
   id: string;
   isCollective: boolean;
   name: string;
 };
 
-type BookDraft = {
+export type BookDraft = {
   author: string;
+  description: string;
   editionLabel: string;
   genres: string;
   languageCode: string;
@@ -22,6 +23,8 @@ type BookDraft = {
   ownerId: string;
   publicationYear: string;
   publisher: string;
+  isbn10: string;
+  isbn13: string;
   subtitle: string;
   title: string;
 };
@@ -33,6 +36,7 @@ const initialActionState: ManualBookActionState = {
 
 const emptyDraft: BookDraft = {
   author: "",
+  description: "",
   editionLabel: "",
   genres: "",
   languageCode: "pt-BR",
@@ -41,6 +45,8 @@ const emptyDraft: BookDraft = {
   ownerId: "",
   publicationYear: "",
   publisher: "",
+  isbn10: "",
+  isbn13: "",
   subtitle: "",
   title: "",
 };
@@ -55,15 +61,18 @@ function ReviewItem({ label, value }: { label: string; value: string }) {
 }
 
 export function ManualBookForm({
+  initialDraft,
   locations,
   owners,
 }: {
+  initialDraft?: Partial<BookDraft>;
   locations: string[];
   owners: OwnerOption[];
 }) {
   const [draft, setDraft] = useState<BookDraft>({
     ...emptyDraft,
-    ownerId: owners[0]?.id ?? "",
+    ...initialDraft,
+    ownerId: initialDraft?.ownerId ?? owners[0]?.id ?? "",
   });
   const [reviewing, setReviewing] = useState(false);
   const [state, action, pending] = useActionState(createManualBook, initialActionState);
@@ -111,6 +120,7 @@ export function ManualBookForm({
         </div>
 
         <dl className="review-grid">
+          <ReviewItem label="ISBN" value={draft.isbn13 || draft.isbn10} />
           <ReviewItem label="Título" value={draft.title} />
           <ReviewItem label="Autor" value={draft.author} />
           <ReviewItem label="Subtítulo" value={draft.subtitle} />
@@ -121,6 +131,7 @@ export function ManualBookForm({
           <ReviewItem label="Ano" value={draft.publicationYear} />
           <ReviewItem label="Idioma" value={draft.languageCode} />
           <ReviewItem label="Gêneros" value={draft.genres} />
+          <ReviewItem label="Descrição" value={draft.description} />
           <ReviewItem label="Observações" value={draft.notes} />
         </dl>
 
@@ -163,6 +174,13 @@ export function ManualBookForm({
       </div>
 
       <div className="book-fields two-columns">
+        {(draft.isbn13 || draft.isbn10) && (
+          <div className="isbn-banner full-field">
+            <span>ISBN identificado</span>
+            <strong>{draft.isbn13 || draft.isbn10}</strong>
+          </div>
+        )}
+
         <div className="field full-field">
           <label htmlFor="title">Título *</label>
           <input
@@ -301,6 +319,18 @@ export function ManualBookForm({
         </div>
 
         <div className="field full-field">
+          <label htmlFor="description">Descrição</label>
+          <textarea
+            id="description"
+            maxLength={4000}
+            onChange={(event) => updateField("description", event.target.value)}
+            placeholder="Resumo ou descrição do livro"
+            rows={5}
+            value={draft.description}
+          />
+        </div>
+
+        <div className="field full-field">
           <label htmlFor="notes">Observações</label>
           <textarea
             id="notes"
@@ -319,3 +349,4 @@ export function ManualBookForm({
     </form>
   );
 }
+

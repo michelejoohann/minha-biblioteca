@@ -637,6 +637,17 @@ h1 {
   font-size: 0.9rem;
 }
 
+.next-actions-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.next-actions-grid .next-step-card {
+  grid-column: auto;
+}
+
 .book-entry-page {
   min-height: 100vh;
   padding: 24px;
@@ -809,6 +820,105 @@ h1 {
   color: var(--muted);
 }
 
+.isbn-lookup-card {
+  display: grid;
+  justify-items: start;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: clamp(24px, 6vw, 48px);
+  background: var(--paper);
+  box-shadow: 0 18px 55px rgb(72 43 91 / 9%);
+}
+
+.isbn-symbol {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 22px;
+  border-radius: 16px;
+  color: var(--purple-dark);
+  background: var(--purple-soft);
+  font-size: 1.65rem;
+}
+
+.isbn-lookup-card h2 {
+  margin: 0 0 10px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 5vw, 2.35rem);
+  font-weight: 600;
+}
+
+.isbn-lookup-card > p {
+  max-width: 610px;
+  margin: 0 0 24px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.isbn-lookup-card .field {
+  width: min(100%, 520px);
+}
+
+.isbn-lookup-card .primary-button {
+  margin-top: 18px;
+}
+
+.isbn-result-flow {
+  display: grid;
+  gap: 20px;
+}
+
+.lookup-message {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px 18px;
+  background: var(--paper);
+}
+
+.lookup-message > span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: white;
+  font-weight: 800;
+}
+
+.lookup-message.found > span {
+  background: #2d7650;
+}
+
+.lookup-message.not-found > span {
+  background: #9a7622;
+}
+
+.lookup-message p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.lookup-message a,
+.lookup-message button {
+  white-space: nowrap;
+}
+
+.isbn-banner {
+  margin: 0 0 28px;
+  border: 1px solid #d6c5de;
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: var(--purple-dark);
+  background: var(--purple-soft);
+  line-height: 1.45;
+}
+
 @media (max-width: 760px) {
   .auth-page {
     padding: 14px;
@@ -883,6 +993,20 @@ h1 {
     grid-template-columns: 1fr;
   }
 
+  .next-actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lookup-message {
+    grid-template-columns: auto 1fr;
+  }
+
+  .lookup-message button,
+  .lookup-message a {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
   .summary-card,
   .owners-card,
   .next-step-card {
@@ -919,3 +1043,4 @@ h1 {
     transition: none !important;
   }
 }
+
