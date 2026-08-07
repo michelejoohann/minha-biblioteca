@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "./actions";
@@ -139,13 +140,13 @@ export default async function LibraryPage() {
           <AddOwnerForm />
         </div>
 
-        <div className="next-step-card">
+        <Link className="next-step-card" href="/biblioteca/livros/novo">
           <span aria-hidden="true">＋</span>
           <div>
-            <strong>Próximo passo</strong>
+            <strong>Cadastrar o primeiro livro</strong>
             <p>Cadastro manual de livros com proprietário e localização.</p>
           </div>
-        </div>
+        </Link>
       </section>
     </main>
   );
