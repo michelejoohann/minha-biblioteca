@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { parseIsbn } from "@/lib/books/isbn";
 import { createClient } from "@/lib/supabase/server";
 
 export type ManualBookActionState = {
@@ -36,6 +37,9 @@ export async function createManualBook(
   const languageCode = formText(formData, "languageCode");
   const genresText = formText(formData, "genres");
   const notes = formText(formData, "notes");
+  const description = formText(formData, "description");
+  const isbn10 = formText(formData, "isbn10");
+  const isbn13 = formText(formData, "isbn13");
 
   if (title.length < 1 || title.length > 300) {
     return { message: "Informe um título com até 300 caracteres.", status: "error" };
@@ -63,6 +67,13 @@ export async function createManualBook(
 
   if (languageCode && !/^[a-z]{2,3}(-[A-Z]{2})?$/.test(languageCode)) {
     return { message: "Use um idioma como pt-BR, en ou es.", status: "error" };
+  }
+
+  const isbnInput = isbn13 || isbn10;
+  const parsedIsbn = isbnInput ? parseIsbn(isbnInput) : null;
+
+  if (isbnInput && !parsedIsbn) {
+    return { message: "O ISBN informado não é válido.", status: "error" };
   }
 
   const genres = [...new Set(
@@ -96,9 +107,12 @@ export async function createManualBook(
 
   const { data: copyId, error } = await supabase.rpc("create_manual_book", {
     p_author: author,
+    p_description: description,
     p_edition_label: editionLabel,
     p_genres: genres,
     p_household_id: membership.household_id,
+    p_isbn_10: parsedIsbn?.isbn10 ?? "",
+    p_isbn_13: parsedIsbn?.isbn13 ?? "",
     p_language_code: languageCode,
     p_location_name: locationName,
     p_notes: notes,
@@ -111,10 +125,13 @@ export async function createManualBook(
 
   if (error) {
     const unauthorized = error.code === "42501";
+    const duplicateIsbn = error.code === "23505";
     return {
-      message: unauthorized
-        ? "Você não tem permissão para cadastrar nesta biblioteca."
-        : "Não foi possível salvar o livro. Revise os dados e tente novamente.",
+      message: duplicateIsbn
+        ? "Este ISBN já está cadastrado na biblioteca."
+        : unauthorized
+          ? "Você não tem permissão para cadastrar nesta biblioteca."
+          : "Não foi possível salvar o livro. Revise os dados e tente novamente.",
       status: "error",
     };
   }
@@ -126,3 +143,4 @@ export async function createManualBook(
     status: "success",
   };
 }
+

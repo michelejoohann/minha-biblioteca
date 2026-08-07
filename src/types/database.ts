@@ -591,9 +591,12 @@ export type Database = {
       create_manual_book: {
         Args: {
           p_author: string
+          p_description?: string
           p_edition_label?: string
           p_genres?: string[]
           p_household_id: string
+          p_isbn_10?: string
+          p_isbn_13?: string
           p_language_code?: string
           p_location_name: string
           p_notes?: string
@@ -748,3 +751,4 @@ export const Constants = {
     },
   },
 } as const
+
