@@ -1,5 +1,9 @@
 # Modelo de dados
 
+## Estado da implementação
+
+O esquema está versionado em `supabase/migrations`. A migração inicial cria as entidades abaixo, índices de busca e integridade, triggers de atualização e políticas de Row Level Security; uma segunda migração cobre as chaves estrangeiras com os índices recomendados pelo Performance Advisor. As duas migrações estão aplicadas ao projeto `mfuvmiyclvrkspdtbahy`. A conexão é descrita em `docs/supabase-setup.md`.
+
 ## Entidades propostas
 
 ### `profiles`
@@ -77,4 +81,3 @@ Uma correspondência de ISBN no mesmo household é uma duplicidade exata de edi�
 ## Row Level Security
 
 As políticas devem permitir leitura e escrita somente quando `auth.uid()` for membro do household relacionado. Alterações de membros e configurações ficam restritas a administradores. Buckets de capas seguem a mesma separação lógica por household.
-
