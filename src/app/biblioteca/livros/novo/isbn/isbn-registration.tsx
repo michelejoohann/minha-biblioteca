@@ -38,6 +38,18 @@ export function IsbnRegistration({
 
   if (state.status === "ready" && state.isbn) {
     const metadata = state.metadata;
+    const autoFilledFields = metadata
+      ? [
+          metadata.title && "título",
+          metadata.authors.length && "autor",
+          metadata.subtitle && "subtítulo",
+          metadata.publisher && "editora",
+          metadata.publicationYear && "ano",
+          metadata.languageCode && "idioma",
+          metadata.genres.length && "gêneros",
+          metadata.description && "descrição",
+        ].filter((field): field is string => Boolean(field))
+      : [];
     const initialDraft: Partial<BookDraft> = {
       author: metadata?.authors.join(", ") ?? "",
       description: metadata?.description ?? "",
@@ -58,6 +70,11 @@ export function IsbnRegistration({
           <div>
             <strong>{state.found ? "Dados encontrados" : "Cadastro manual liberado"}</strong>
             <p>{state.message}</p>
+            {autoFilledFields.length > 0 && (
+              <p>
+                Preenchido automaticamente: {autoFilledFields.join(", ")}.
+              </p>
+            )}
             {state.found && (
               <a href="https://openlibrary.org" rel="noreferrer" target="_blank">
                 Sugestões fornecidas pela Open Library
@@ -70,6 +87,7 @@ export function IsbnRegistration({
         </div>
 
         <ManualBookForm
+          key={state.isbn.isbn13}
           initialDraft={initialDraft}
           locations={locations}
           owners={owners}
