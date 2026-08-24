@@ -40,7 +40,33 @@ test("external metadata lookup is isolated behind a replaceable provider", async
   assert.match(service, /BookMetadataProvider/);
   assert.match(service, /OpenLibraryProvider/);
   assert.match(provider, /openlibrary\.org\/search\.json/);
+  assert.match(provider, /openlibrary\.org\/api\/books/);
+  assert.match(provider, /Promise\.allSettled/);
+  assert.match(provider, /editionAuthors\.length/);
+  assert.match(provider, /publicationYear\(edition\?\.publish_date\)/);
   assert.match(provider, /revalidate: 86400/);
+});
+
+test("ISBN metadata is passed to editable form fields", async () => {
+  const registration = await readProjectFile(
+    "src/app/biblioteca/livros/novo/isbn/isbn-registration.tsx",
+  );
+
+  for (const field of [
+    "title",
+    "author",
+    "subtitle",
+    "publisher",
+    "publicationYear",
+    "languageCode",
+    "genres",
+    "description",
+  ]) {
+    assert.match(registration, new RegExp(`${field}: metadata`));
+  }
+
+  assert.match(registration, /Preenchido automaticamente:/);
+  assert.match(registration, /key=\{state\.isbn\.isbn13\}/);
 });
 
 test("provider failure still opens an editable manual registration", async () => {
