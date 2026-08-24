@@ -2,13 +2,17 @@
 
 import { useActionState, useState } from "react";
 import {
-  initialAuthState,
   signIn,
   signUp,
   type AuthActionState,
 } from "./actions";
 
 type Mode = "signin" | "signup";
+
+const initialAuthState: AuthActionState = {
+  message: "",
+  status: "idle",
+};
 
 function SubmitButton({ mode, pending }: { mode: Mode; pending: boolean }) {
   const label = mode === "signin" ? "Entrar" : "Criar minha conta";
@@ -113,3 +117,4 @@ export function AuthForm() {
     </>
   );
 }
+
