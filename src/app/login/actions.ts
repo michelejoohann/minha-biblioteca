@@ -9,11 +9,6 @@ export type AuthActionState = {
   status: "error" | "idle" | "success";
 };
 
-export const initialAuthState: AuthActionState = {
-  message: "",
-  status: "idle",
-};
-
 function textValue(formData: FormData, field: string, trim = true) {
   const value = formData.get(field);
   return typeof value === "string" ? (trim ? value.trim() : value) : "";
@@ -130,3 +125,4 @@ export async function signUp(
     status: "success",
   };
 }
+
