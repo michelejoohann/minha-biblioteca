@@ -1,9 +1,17 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { parseIsbn } from "@/lib/books/isbn";
 import { createClient } from "@/lib/supabase/server";
 import { IsbnRegistration } from "./isbn-registration";
 
-export default async function IsbnBookPage() {
+export default async function IsbnBookPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ isbn?: string | string[] }>;
+}) {
+  const query = await searchParams;
+  const queryIsbn = Array.isArray(query.isbn) ? query.isbn[0] : query.isbn;
+  const initialIsbn = queryIsbn ? parseIsbn(queryIsbn)?.isbn13 : undefined;
   const supabase = await createClient();
   const { data: claimsData } = await supabase.auth.getClaims();
   const userId = claimsData?.claims?.sub;
@@ -66,6 +74,7 @@ export default async function IsbnBookPage() {
         </div>
 
         <IsbnRegistration
+          initialIsbn={initialIsbn}
           locations={(locations ?? []).map((location) => location.name)}
           owners={owners.map((owner) => ({
             id: owner.id,

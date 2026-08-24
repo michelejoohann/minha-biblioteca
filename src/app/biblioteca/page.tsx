@@ -141,6 +141,13 @@ export default async function LibraryPage() {
         </div>
 
         <div className="next-actions-grid">
+          <Link className="next-step-card" href="/biblioteca/livros/novo/scanner">
+            <span aria-hidden="true">▥</span>
+            <div>
+              <strong>Escanear código de barras</strong>
+              <p>Use a câmera do celular para identificar o ISBN.</p>
+            </div>
+          </Link>
           <Link className="next-step-card" href="/biblioteca/livros/novo/isbn">
             <span aria-hidden="true">⌁</span>
             <div>
