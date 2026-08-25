@@ -1321,6 +1321,181 @@ h1 {
   margin: -12px 0 0;
 }
 
+.photo-registration-flow,
+.photo-result-flow {
+  display: grid;
+  gap: 20px;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.photo-picker {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  padding: clamp(20px, 4vw, 30px);
+  background: var(--paper);
+  box-shadow: 0 12px 38px rgb(72 43 91 / 7%);
+}
+
+.photo-picker-copy h2 {
+  margin: 6px 0 9px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.45rem, 4vw, 1.9rem);
+  font-weight: 600;
+}
+
+.photo-picker-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.photo-preview,
+.photo-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 17px;
+  background: #efe8f1;
+}
+
+.photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-placeholder {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.photo-placeholder span {
+  color: var(--purple);
+  font-size: 2.5rem;
+}
+
+.photo-button {
+  width: 100%;
+  cursor: pointer;
+}
+
+.visually-hidden {
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.photo-privacy-note,
+.ocr-progress,
+.recognized-cover {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--paper);
+}
+
+.photo-privacy-note {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 16px 18px;
+  color: var(--muted);
+}
+
+.photo-privacy-note > span {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  flex: 0 0 36px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--purple-dark);
+  background: var(--purple-soft);
+  font-weight: 800;
+}
+
+.photo-privacy-note p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.ocr-progress {
+  display: grid;
+  gap: 11px;
+  padding: 18px;
+}
+
+.ocr-progress > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ocr-progress progress {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  accent-color: var(--purple);
+}
+
+.ocr-progress small {
+  color: var(--muted);
+}
+
+.recognized-cover {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px;
+}
+
+.recognized-cover img {
+  width: 84px;
+  height: 112px;
+  flex: 0 0 84px;
+  border-radius: 11px;
+  object-fit: cover;
+  box-shadow: 0 8px 22px rgb(40 25 48 / 15%);
+}
+
+.recognized-cover > div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.recognized-cover strong,
+.recognized-cover small {
+  overflow-wrap: anywhere;
+}
+
+.recognized-cover small {
+  color: var(--muted);
+}
+
+.photo-analyze-actions {
+  margin-top: 0;
+}
+
 @media (max-width: 760px) {
   .auth-page {
     padding: 14px;
@@ -1414,7 +1589,8 @@ h1 {
   }
 
   .scanner-card,
-  .manual-isbn-card {
+  .manual-isbn-card,
+  .photo-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1502,4 +1678,3 @@ h1 {
     transition: none !important;
   }
 }
-

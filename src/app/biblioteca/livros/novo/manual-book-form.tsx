@@ -15,6 +15,7 @@ export type OwnerOption = {
 
 export type BookDraft = {
   author: string;
+  coverPath: string;
   description: string;
   editionLabel: string;
   genres: string;
@@ -37,6 +38,7 @@ const initialActionState: ManualBookActionState = {
 
 const emptyDraft: BookDraft = {
   author: "",
+  coverPath: "",
   description: "",
   editionLabel: "",
   genres: "",
@@ -113,6 +115,7 @@ export function ManualBookForm({
         </div>
 
         <dl className="review-grid">
+          <ReviewItem label="Foto da capa" value={draft.coverPath ? "Adicionada" : "Não adicionada"} />
           <ReviewItem label="ISBN" value={draft.isbn13 || draft.isbn10} />
           <ReviewItem label="Título" value={draft.title} />
           <ReviewItem label="Autor" value={draft.author} />
@@ -342,4 +345,3 @@ export function ManualBookForm({
     </form>
   );
 }
-

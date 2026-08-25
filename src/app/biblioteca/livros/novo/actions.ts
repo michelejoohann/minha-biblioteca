@@ -40,6 +40,7 @@ export async function createManualBook(
   const description = formText(formData, "description");
   const isbn10 = formText(formData, "isbn10");
   const isbn13 = formText(formData, "isbn13");
+  const coverPath = formText(formData, "coverPath");
 
   if (title.length < 1 || title.length > 300) {
     return { message: "Informe um título com até 300 caracteres.", status: "error" };
@@ -105,8 +106,19 @@ export async function createManualBook(
     };
   }
 
+  if (
+    coverPath
+    && (
+      coverPath.length > 600
+      || !coverPath.startsWith(`${membership.household_id}/${userId}/`)
+    )
+  ) {
+    return { message: "A foto da capa não pertence a esta biblioteca.", status: "error" };
+  }
+
   const { data: copyId, error } = await supabase.rpc("create_manual_book", {
     p_author: author,
+    p_cover_path: coverPath,
     p_description: description,
     p_edition_label: editionLabel,
     p_genres: genres,
@@ -143,4 +155,3 @@ export async function createManualBook(
     status: "success",
   };
 }
-
