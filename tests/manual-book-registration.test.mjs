@@ -41,4 +41,7 @@ test("manual form includes a review step before persistence", async () => {
   assert.match(form, /Confirmar e salvar/);
   assert.match(form, /Proprietário/);
   assert.match(form, /Localização/);
+  assert.match(form, /href="\/biblioteca"/);
+  assert.doesNotMatch(form, /window\.location\.reload/);
 });
+
