@@ -161,6 +161,13 @@ export default async function LibraryPage() {
               <p>Consulte e busque por título, autor, ISBN, proprietário ou localização.</p>
             </div>
           </Link>
+          <Link className="next-step-card" href="/biblioteca/livros/novo/foto">
+            <span aria-hidden="true">▣</span>
+            <div>
+              <strong>Cadastrar por foto</strong>
+              <p>Fotografe a capa e a ficha catalográfica para preencher os dados.</p>
+            </div>
+          </Link>
           <Link className="next-step-card" href="/biblioteca/livros/novo/scanner">
             <span aria-hidden="true">▥</span>
             <div>
@@ -187,4 +194,3 @@ export default async function LibraryPage() {
     </main>
   );
 }
-
