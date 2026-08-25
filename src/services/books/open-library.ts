@@ -3,6 +3,7 @@ import type { BookMetadata, BookMetadataProvider } from "./types";
 
 type OpenLibraryDocument = {
   author_name?: string[];
+  first_sentence?: string | string[];
   first_publish_year?: number;
   language?: string[];
   publisher?: string[];
@@ -73,7 +74,7 @@ async function fetchSearchDocument(isbn: ParsedIsbn) {
   url.searchParams.set("isbn", isbn.isbn13);
   url.searchParams.set(
     "fields",
-    "title,subtitle,author_name,publisher,first_publish_year,language,subject",
+    "title,subtitle,author_name,publisher,first_publish_year,language,subject,first_sentence",
   );
   url.searchParams.set("limit", "1");
 
@@ -102,11 +103,7 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     ]);
     const edition = editionResult.status === "fulfilled" ? editionResult.value : undefined;
     const document = searchResult.status === "fulfilled" ? searchResult.value : undefined;
-    const title = edition?.title ?? document?.title;
-
-    if (!title) {
-      return null;
-    }
+    const title = edition?.title ?? document?.title ?? "";
 
     const editionAuthors = (edition?.authors ?? [])
       .map((author) => author.name?.trim())
@@ -114,18 +111,43 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     const editionSubjects = (edition?.subjects ?? [])
       .map((subject) => subject.name?.trim())
       .filter((name): name is string => Boolean(name));
+    const authors = (
+      editionAuthors.length ? editionAuthors : document?.author_name ?? []
+    ).slice(0, 8);
+    const genres = (
+      editionSubjects.length ? editionSubjects : document?.subject ?? []
+    ).slice(0, 12);
+    const publisher = edition?.publishers?.[0]?.name ?? document?.publisher?.[0];
+    const year = publicationYear(edition?.publish_date) ?? document?.first_publish_year;
+    const subtitle = edition?.subtitle ?? document?.subtitle;
+    const languageCode = normalizeLanguage(document?.language?.[0]);
+    const firstSentence = Array.isArray(document?.first_sentence)
+      ? document.first_sentence[0]
+      : document?.first_sentence;
+
+    if (
+      !title &&
+      authors.length === 0 &&
+      genres.length === 0 &&
+      !publisher &&
+      !year &&
+      !subtitle &&
+      !languageCode &&
+      !firstSentence
+    ) {
+      return null;
+    }
 
     return {
       ...isbn,
-      authors: (
-        editionAuthors.length ? editionAuthors : document?.author_name ?? []
-      ).slice(0, 8),
-      genres: (editionSubjects.length ? editionSubjects : document?.subject ?? []).slice(0, 12),
-      languageCode: normalizeLanguage(document?.language?.[0]),
-      publicationYear: publicationYear(edition?.publish_date) ?? document?.first_publish_year,
-      publisher: edition?.publishers?.[0]?.name ?? document?.publisher?.[0],
+      authors,
+      description: firstSentence,
+      genres,
+      languageCode,
+      publicationYear: year,
+      publisher,
       source: "Open Library",
-      subtitle: edition?.subtitle ?? document?.subtitle,
+      subtitle,
       title,
     };
   }
