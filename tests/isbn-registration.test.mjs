@@ -44,6 +44,10 @@ test("external metadata lookup is isolated behind a replaceable provider", async
   assert.match(provider, /Promise\.allSettled/);
   assert.match(provider, /editionAuthors\.length/);
   assert.match(provider, /publicationYear\(edition\?\.publish_date\)/);
+  assert.match(provider, /first_sentence/);
+  assert.match(provider, /authors\.length === 0/);
+  assert.match(provider, /!languageCode/);
+  assert.match(provider, /description: firstSentence/);
   assert.match(provider, /revalidate: 86400/);
 });
 
