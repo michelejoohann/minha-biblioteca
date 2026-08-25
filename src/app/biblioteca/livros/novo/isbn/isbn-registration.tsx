@@ -75,10 +75,8 @@ export function IsbnRegistration({
                 Preenchido automaticamente: {autoFilledFields.join(", ")}.
               </p>
             )}
-            {state.found && (
-              <a href="https://openlibrary.org" rel="noreferrer" target="_blank">
-                Sugestões fornecidas pela Open Library
-              </a>
+            {state.found && metadata?.source && (
+              <p>Fontes consultadas: {metadata.source}.</p>
             )}
           </div>
           <button onClick={() => window.location.reload()} type="button">
