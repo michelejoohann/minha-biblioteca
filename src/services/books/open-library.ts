@@ -53,11 +53,11 @@ async function fetchEdition(isbn: ParsedIsbn) {
   url.searchParams.set("jscmd", "data");
 
   const response = await fetch(url, {
+    cache: "no-store",
     headers: {
       Accept: "application/json",
       "User-Agent": "MinhaBiblioteca/0.1 (family library lookup)",
     },
-    next: { revalidate: 86400 },
     signal: AbortSignal.timeout(6000),
   });
 
@@ -79,11 +79,11 @@ async function fetchSearchDocument(isbn: ParsedIsbn) {
   url.searchParams.set("limit", "1");
 
   const response = await fetch(url, {
+    cache: "no-store",
     headers: {
       Accept: "application/json",
       "User-Agent": "MinhaBiblioteca/0.1 (family library lookup)",
     },
-    next: { revalidate: 86400 },
     signal: AbortSignal.timeout(6000),
   });
 
