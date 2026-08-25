@@ -80,3 +80,29 @@ export function parseIsbn(input: string): ParsedIsbn | null {
   return null;
 }
 
+export function extractIsbnFromScan(rawValue: string): ParsedIsbn | null {
+  const compact = rawValue.toUpperCase().replace(/[^0-9X]/g, "");
+
+  for (let index = 0; index <= compact.length - 13; index += 1) {
+    const candidate = compact.slice(index, index + 13);
+    if (/^97[89]\d{10}$/.test(candidate)) {
+      const parsed = parseIsbn(candidate);
+      if (parsed) {
+        return parsed;
+      }
+    }
+  }
+
+  for (let index = 0; index <= compact.length - 10; index += 1) {
+    const candidate = compact.slice(index, index + 10);
+    if (/^\d{9}[\dX]$/.test(candidate)) {
+      const parsed = parseIsbn(candidate);
+      if (parsed) {
+        return parsed;
+      }
+    }
+  }
+
+  return null;
+}
+
