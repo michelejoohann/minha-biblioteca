@@ -7,6 +7,7 @@ import {
   decodeEan13FromGrayscale,
   isValidEan13,
 } from "../src/lib/books/ean13.ts";
+import { extractIsbnFromScan } from "../src/lib/books/isbn.ts";
 
 const readProjectFile = (path) =>
   readFile(new URL(`../${path}`, import.meta.url), "utf8");
@@ -84,6 +85,18 @@ test("EAN-13 decoder recognizes a valid book ISBN in both directions", () => {
   assert.equal(isValidEan13("9780306406158"), false);
 });
 
+test("camera results and QR text extract embedded ISBN values", () => {
+  assert.equal(
+    extractIsbnFromScan("https://livros.example/obra/978-0-306-40615-7")?.isbn13,
+    "9780306406157",
+  );
+  assert.equal(
+    extractIsbnFromScan("ISBN 0-306-40615-2")?.isbn13,
+    "9780306406157",
+  );
+  assert.equal(extractIsbnFromScan("https://example.com/sem-livro"), null);
+});
+
 test("camera access only starts from the explicit user action", async () => {
   const scanner = await readProjectFile(
     "src/app/biblioteca/livros/novo/scanner/barcode-scanner.tsx",
@@ -93,6 +106,9 @@ test("camera access only starts from the explicit user action", async () => {
   assert.match(scanner, /async function startCamera\(\)/);
   assert.match(scanner, /onClick=\{startCamera\}/);
   assert.match(scanner, /A câmera permanece desligada/);
+  assert.match(scanner, /focusMode: "continuous"/);
+  assert.match(scanner, /height: \{ ideal: 1080 \}/);
+  assert.match(scanner, /Aproximação da câmera/);
 });
 
 test("scanner sends recognized ISBN to lookup and keeps a manual fallback", async () => {
@@ -107,6 +123,9 @@ test("scanner sends recognized ISBN to lookup and keeps a manual fallback", asyn
   assert.match(scanner, /Prefere digitar\?/);
   assert.match(scanner, /NotAllowedError/);
   assert.match(scanner, /configurações deste site/);
+  assert.match(scanner, /BarcodeDetector/);
+  assert.match(scanner, /"ean_13", "qr_code"/);
+  assert.match(scanner, /extractIsbnFromScan/);
   assert.match(isbnForm, /requestSubmit\(\)/);
 });
 

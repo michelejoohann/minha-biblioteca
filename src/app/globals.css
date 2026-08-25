@@ -1059,6 +1059,21 @@ h1 {
   margin-top: 24px;
 }
 
+.camera-zoom {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+  color: var(--purple-dark);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.camera-zoom input {
+  width: 100%;
+  accent-color: var(--purple);
+}
+
 .manual-isbn-card {
   display: grid;
   grid-template-columns: minmax(220px, 0.8fr) minmax(300px, 1.2fr);

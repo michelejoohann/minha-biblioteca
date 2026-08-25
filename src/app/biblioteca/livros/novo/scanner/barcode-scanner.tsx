@@ -3,7 +3,64 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { decodeEan13FromGrayscale } from "@/lib/books/ean13";
-import { parseIsbn } from "@/lib/books/isbn";
+import { extractIsbnFromScan, parseIsbn } from "@/lib/books/isbn";
+
+type DetectedBarcode = {
+  format: string;
+  rawValue: string;
+};
+
+type NativeBarcodeDetector = {
+  detect(source: HTMLVideoElement): Promise<DetectedBarcode[]>;
+};
+
+type NativeBarcodeDetectorConstructor = {
+  getSupportedFormats(): Promise<string[]>;
+  new (options: { formats: string[] }): NativeBarcodeDetector;
+};
+
+type CameraCapabilities = MediaTrackCapabilities & {
+  focusMode?: string[];
+  zoom?: { max: number; min: number; step?: number };
+};
+
+type CameraConstraintSet = MediaTrackConstraintSet & {
+  focusMode?: string;
+  zoom?: number;
+};
+
+type CameraSettings = MediaTrackSettings & {
+  zoom?: number;
+};
+
+type ZoomRange = {
+  max: number;
+  min: number;
+  step: number;
+  value: number;
+};
+
+async function createNativeDetector() {
+  const Detector = (
+    globalThis as typeof globalThis & {
+      BarcodeDetector?: NativeBarcodeDetectorConstructor;
+    }
+  ).BarcodeDetector;
+
+  if (!Detector) {
+    return null;
+  }
+
+  try {
+    const supported = await Detector.getSupportedFormats();
+    const formats = ["ean_13", "qr_code"].filter((format) =>
+      supported.includes(format),
+    );
+    return formats.length ? new Detector({ formats }) : null;
+  } catch {
+    return null;
+  }
+}
 
 type ScannerStatus =
   | "denied"
@@ -28,6 +85,8 @@ export function BarcodeScanner() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const trackRef = useRef<MediaStreamTrack | null>(null);
+  const detectorRef = useRef<NativeBarcodeDetector | null>(null);
   const animationRef = useRef<number | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastFrameRef = useRef(0);
@@ -35,6 +94,7 @@ export function BarcodeScanner() {
   const [message, setMessage] = useState("");
   const [manualIsbn, setManualIsbn] = useState("");
   const [manualError, setManualError] = useState("");
+  const [zoomRange, setZoomRange] = useState<ZoomRange | null>(null);
 
   const stopCamera = useCallback(() => {
     if (animationRef.current !== null) {
@@ -43,6 +103,9 @@ export function BarcodeScanner() {
     }
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
+    trackRef.current = null;
+    detectorRef.current = null;
+    setZoomRange(null);
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
@@ -62,15 +125,37 @@ export function BarcodeScanner() {
   );
 
   const readFrame = useCallback(
-    (time: number) => {
+    async (time: number) => {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       if (!video || !canvas || !streamRef.current) {
         return true;
       }
 
-      if (time - lastFrameRef.current >= 120 && video.readyState >= 2) {
+      if (time - lastFrameRef.current >= 150 && video.readyState >= 2) {
         lastFrameRef.current = time;
+        const detector = detectorRef.current;
+
+        if (detector) {
+          try {
+            const barcodes = await detector.detect(video);
+            for (const barcode of barcodes) {
+              const isbn = extractIsbnFromScan(barcode.rawValue);
+              if (isbn) {
+                goToIsbn(isbn.isbn13);
+                return true;
+              }
+              if (barcode.format === "qr_code") {
+                setMessage(
+                  "O QR Code foi lido, mas ele não contém um ISBN válido. Procure o código de barras que começa com 978 ou 979.",
+                );
+              }
+            }
+          } catch {
+            // Keep the local EAN-13 decoder active as a browser-compatible fallback.
+          }
+        }
+
         const width = Math.min(960, video.videoWidth);
         const context = canvas.getContext("2d", { willReadFrequently: true });
 
@@ -139,11 +224,14 @@ export function BarcodeScanner() {
         audio: false,
         video: {
           facingMode: { ideal: "environment" },
-          height: { ideal: 720 },
-          width: { ideal: 1280 },
+          frameRate: { ideal: 30 },
+          height: { ideal: 1080 },
+          width: { ideal: 1920 },
         },
       });
       streamRef.current = stream;
+      const [track] = stream.getVideoTracks();
+      trackRef.current = track ?? null;
 
       if (!videoRef.current) {
         stopCamera();
@@ -152,10 +240,47 @@ export function BarcodeScanner() {
 
       videoRef.current.srcObject = stream;
       await videoRef.current.play();
+      detectorRef.current = await createNativeDetector();
+
+      if (track) {
+        const capabilities = track.getCapabilities() as CameraCapabilities;
+        if (capabilities.focusMode?.includes("continuous")) {
+          try {
+            const focus: CameraConstraintSet = { focusMode: "continuous" };
+            await track.applyConstraints({ advanced: [focus] });
+          } catch {
+            // Some devices advertise focus controls but reject changing them.
+          }
+        }
+
+        if (capabilities.zoom && capabilities.zoom.max > capabilities.zoom.min) {
+          const settings = track.getSettings() as CameraSettings;
+          const preferredZoom = Math.min(
+            capabilities.zoom.max,
+            Math.max(capabilities.zoom.min, settings.zoom ?? 1.5),
+          );
+          const nextZoomRange = {
+            max: capabilities.zoom.max,
+            min: capabilities.zoom.min,
+            step: capabilities.zoom.step || 0.1,
+            value: preferredZoom,
+          };
+          setZoomRange(nextZoomRange);
+          try {
+            const zoom: CameraConstraintSet = { zoom: preferredZoom };
+            await track.applyConstraints({ advanced: [zoom] });
+          } catch {
+            // The slider remains available for devices that require a user gesture.
+          }
+        }
+      }
+
       setStatus("scanning");
-      setMessage("Centralize o código de barras dentro da faixa e mantenha o celular firme.");
-      function scanFrame(time: number) {
-        if (!readFrame(time)) {
+      setMessage(
+        "Centralize o código, mantenha cerca de um palmo de distância e ajuste a aproximação se necessário.",
+      );
+      async function scanFrame(time: number) {
+        if (!(await readFrame(time))) {
           animationRef.current = requestAnimationFrame(scanFrame);
         }
       }
@@ -171,6 +296,21 @@ export function BarcodeScanner() {
             : "error";
       setStatus(nextStatus);
       setMessage(statusCopy[nextStatus] ?? statusCopy.error ?? "");
+    }
+  }
+
+  async function changeZoom(value: number) {
+    const track = trackRef.current;
+    if (!track || !zoomRange) {
+      return;
+    }
+
+    setZoomRange((current) => current ? { ...current, value } : current);
+    try {
+      const zoom: CameraConstraintSet = { zoom: value };
+      await track.applyConstraints({ advanced: [zoom] });
+    } catch {
+      setMessage("Este aparelho não permitiu alterar a aproximação da câmera.");
     }
   }
 
@@ -220,16 +360,32 @@ export function BarcodeScanner() {
 
         <div className="scanner-copy">
           <span className="eyebrow">Leitura pela câmera</span>
-          <h2>Aponte para o código de barras</h2>
+          <h2>Aponte para o ISBN ou QR Code</h2>
           <p>
-            Use o código da contracapa que começa com 978 ou 979. Nenhuma imagem é
-            enviada ou armazenada.
+            Use o código de barras da contracapa que começa com 978 ou 979. Um QR
+            Code também funciona quando contém um ISBN. Nenhuma imagem é enviada ou
+            armazenada.
           </p>
 
           {message && (
             <div className={`camera-message ${status}`} role="status">
               {message}
             </div>
+          )}
+
+          {active && zoomRange && (
+            <label className="camera-zoom">
+              <span>Aproximação</span>
+              <input
+                aria-label="Aproximação da câmera"
+                max={zoomRange.max}
+                min={zoomRange.min}
+                onChange={(event) => void changeZoom(Number(event.target.value))}
+                step={zoomRange.step}
+                type="range"
+                value={zoomRange.value}
+              />
+            </label>
           )}
 
           <div className="scanner-actions">
