@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import {
   createManualBook,
@@ -89,17 +90,9 @@ export function ManualBookForm({
         <span className="eyebrow">Livro cadastrado</span>
         <h2>Tudo certo!</h2>
         <p>{state.message}</p>
-        <button
-          className="primary-button"
-          onClick={() => {
-            setDraft({ ...emptyDraft, ownerId: owners[0]?.id ?? "" });
-            setReviewing(false);
-            window.location.reload();
-          }}
-          type="button"
-        >
+        <Link className="primary-button" href="/biblioteca">
           Cadastrar outro livro
-        </button>
+        </Link>
       </div>
     );
   }
