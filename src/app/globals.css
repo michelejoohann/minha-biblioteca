@@ -497,6 +497,44 @@ h1 {
   padding: clamp(24px, 5vw, 42px);
 }
 
+.owners-summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.owners-summary::-webkit-details-marker {
+  display: none;
+}
+
+.owners-disclosure:not([open]) .owners-summary {
+  margin-bottom: 0;
+}
+
+.owner-summary-meta,
+.owner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.owner-toggle-label {
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: var(--purple-dark);
+  background: var(--purple-soft);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.owner-toggle-collapsed,
+.owners-disclosure:not([open]) .owner-toggle-expanded {
+  display: none;
+}
+
+.owners-disclosure:not([open]) .owner-toggle-collapsed {
+  display: inline-flex;
+}
+
 .section-heading {
   display: flex;
   align-items: flex-end;
@@ -584,6 +622,33 @@ h1 {
   font-weight: 750;
 }
 
+.owner-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.owner-delete-form {
+  display: grid;
+  justify-items: end;
+}
+
+.danger-text-button {
+  color: #a33d4f;
+}
+
+.danger-text-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.owner-action-message {
+  max-width: 240px;
+  color: #9c3044;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  text-align: right;
+}
+
 .add-owner-form {
   display: grid;
   gap: 10px;
@@ -640,7 +705,7 @@ h1 {
 .next-actions-grid {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -672,6 +737,165 @@ h1 {
 
 .entry-back {
   margin: 0;
+}
+
+.catalog-header,
+.catalog-content {
+  width: min(100%, 1050px);
+  margin-inline: auto;
+}
+
+.catalog-intro {
+  margin-bottom: 24px;
+}
+
+.catalog-search {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 18px;
+  background: var(--paper);
+  box-shadow: 0 12px 38px rgb(72 43 91 / 7%);
+}
+
+.catalog-search .field {
+  flex: 1;
+}
+
+.catalog-search .primary-button,
+.catalog-search .secondary-button {
+  flex: 0 0 auto;
+}
+
+.catalog-result-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 34px 0 16px;
+}
+
+.catalog-result-heading h2,
+.catalog-empty h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.55rem, 4vw, 2rem);
+  font-weight: 600;
+}
+
+.catalog-result-heading span {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.book-catalog-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.book-catalog-card,
+.catalog-empty {
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 22px;
+  background: var(--paper);
+  box-shadow: 0 12px 38px rgb(72 43 91 / 7%);
+}
+
+.book-catalog-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.book-spine {
+  width: 42px;
+  height: 52px;
+  display: grid;
+  flex: 0 0 42px;
+  place-items: center;
+  border-radius: 9px 13px 13px 9px;
+  color: white;
+  background: var(--purple);
+  box-shadow: inset 5px 0 rgb(255 255 255 / 18%);
+}
+
+.book-catalog-main h3 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.book-subtitle,
+.book-authors {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.book-authors {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.book-catalog-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0 0;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.book-catalog-details div {
+  min-width: 0;
+}
+
+.book-catalog-details dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.book-catalog-details dd {
+  overflow-wrap: anywhere;
+  margin: 4px 0 0;
+  font-size: 0.88rem;
+}
+
+.book-genre-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.book-genre-list span {
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: var(--purple-dark);
+  background: var(--purple-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.catalog-empty {
+  margin-top: 24px;
+}
+
+.catalog-empty p {
+  color: var(--muted);
+  line-height: 1.55;
 }
 
 .entry-intro {
@@ -1175,6 +1399,20 @@ h1 {
     grid-template-columns: 1fr;
   }
 
+  .catalog-search {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .catalog-search .primary-button,
+  .catalog-search .secondary-button {
+    width: 100%;
+  }
+
+  .book-catalog-list {
+    grid-template-columns: 1fr;
+  }
+
   .scanner-card,
   .manual-isbn-card {
     grid-template-columns: 1fr;
@@ -1215,6 +1453,31 @@ h1 {
 
   .owner-list {
     grid-template-columns: 1fr;
+  }
+
+  .owner-summary-meta {
+    align-items: flex-end;
+    flex-direction: column;
+  }
+
+  .owner-list li {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .owner-actions {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 54px;
+  }
+
+  .owner-delete-form {
+    justify-items: start;
+  }
+
+  .owner-action-message {
+    max-width: 100%;
+    text-align: left;
   }
 
   .section-heading {

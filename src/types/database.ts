@@ -608,6 +608,27 @@ export type Database = {
         }
         Returns: string
       }
+      search_library_books: {
+        Args: {
+          p_household_id: string
+          p_limit?: number
+          p_query?: string
+        }
+        Returns: {
+          authors: string
+          copy_id: string
+          created_at: string
+          genres: string[]
+          isbn_10: string | null
+          isbn_13: string | null
+          location_name: string
+          owner_name: string
+          publication_year: number | null
+          publisher: string | null
+          subtitle: string | null
+          title: string
+        }[]
+      }
     }
     Enums: {
       household_role: "admin" | "member"

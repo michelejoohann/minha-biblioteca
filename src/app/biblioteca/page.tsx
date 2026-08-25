@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "./actions";
 import { toggleOwner } from "./household-actions";
 import { AddOwnerForm, CreateHouseholdForm } from "./household-forms";
+import { OwnerDeleteForm } from "./owner-delete-form";
 
 function LibraryHeader() {
   return (
@@ -81,6 +82,7 @@ export default async function LibraryPage() {
   const ownerList = owners ?? [];
   const activeOwners = ownerList.filter((owner) => owner.is_active).length;
   const email = typeof data.claims.email === "string" ? data.claims.email : "Conta conectada";
+  const isAdmin = membership.role === "admin";
 
   return (
     <main className="library-page">
@@ -102,45 +104,63 @@ export default async function LibraryPage() {
           <span className="summary-note">Incluindo a coleção da Casa</span>
         </div>
 
-        <div className="owners-card">
-          <div className="section-heading">
+        <details className="owners-card owners-disclosure" open>
+          <summary className="section-heading owners-summary">
             <div>
               <span className="eyebrow">Organização</span>
               <h2>Proprietários</h2>
             </div>
-            <span className="owner-count">{ownerList.length} no total</span>
+            <span className="owner-summary-meta">
+              <span className="owner-count">{ownerList.length} no total</span>
+              <span className="owner-toggle-label owner-toggle-expanded">Recolher</span>
+              <span className="owner-toggle-label owner-toggle-collapsed">Expandir</span>
+            </span>
+          </summary>
+
+          <div className="owners-content">
+            <ul className="owner-list">
+              {ownerList.map((owner) => (
+                <li className={owner.is_active ? "" : "inactive-owner"} key={owner.id}>
+                  <span className="owner-avatar" aria-hidden="true">
+                    {owner.is_collective ? "⌂" : owner.name.slice(0, 1).toUpperCase()}
+                  </span>
+                  <span className="owner-info">
+                    <strong>{owner.name}</strong>
+                    <small>
+                      {owner.is_collective
+                        ? "Coleção compartilhada"
+                        : owner.is_active
+                          ? "Ativo"
+                          : "Desativado"}
+                    </small>
+                  </span>
+                  <div className="owner-actions">
+                    <form action={toggleOwner}>
+                      <input name="ownerId" type="hidden" value={owner.id} />
+                      <button className="text-button" type="submit">
+                        {owner.is_active ? "Desativar" : "Reativar"}
+                      </button>
+                    </form>
+                    {isAdmin && (
+                      <OwnerDeleteForm ownerId={owner.id} ownerName={owner.name} />
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <AddOwnerForm />
           </div>
-
-          <ul className="owner-list">
-            {ownerList.map((owner) => (
-              <li className={owner.is_active ? "" : "inactive-owner"} key={owner.id}>
-                <span className="owner-avatar" aria-hidden="true">
-                  {owner.is_collective ? "⌂" : owner.name.slice(0, 1).toUpperCase()}
-                </span>
-                <span className="owner-info">
-                  <strong>{owner.name}</strong>
-                  <small>
-                    {owner.is_collective
-                      ? "Coleção compartilhada"
-                      : owner.is_active
-                        ? "Ativo"
-                        : "Desativado"}
-                  </small>
-                </span>
-                <form action={toggleOwner}>
-                  <input name="ownerId" type="hidden" value={owner.id} />
-                  <button className="text-button" type="submit">
-                    {owner.is_active ? "Desativar" : "Reativar"}
-                  </button>
-                </form>
-              </li>
-            ))}
-          </ul>
-
-          <AddOwnerForm />
-        </div>
+        </details>
 
         <div className="next-actions-grid">
+          <Link className="next-step-card library-catalog-link" href="/biblioteca/livros">
+            <span aria-hidden="true">▤</span>
+            <div>
+              <strong>Ver livros cadastrados</strong>
+              <p>Consulte e busque por título, autor, ISBN, proprietário ou localização.</p>
+            </div>
+          </Link>
           <Link className="next-step-card" href="/biblioteca/livros/novo/scanner">
             <span aria-hidden="true">▥</span>
             <div>
